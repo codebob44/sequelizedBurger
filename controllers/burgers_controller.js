@@ -1,37 +1,49 @@
-// Create the router for the app, and export the router at the end of the file.
-var express = require("express");
+let express = require("express");
+let db = require("../models");
 
-var router = express.Router();
+// Routes
+// =============================================================
+module.exports = function(app) {
 
-var burger = require("../models/burger.js");
+  // HTML Routes
+  app.get("/", function(req, res) {
+  	db.Burger.findAll({}).then(function(data) {
+      let burgerObj = {
+          burgers:data //data is a array of objects
+      };
+  	  res.render("index", burgerObj);
+  	});
+  });
 
-router.get("/", function(req, res) {
-	burger.all(function(data) {
-		var burgerObject = {
-		  burgers: data
-		};
-		res.render("index", burgerObject);
-	});
-});
+  // POST route for saving a new burger
+  app.post("/", function(req, res) {
+  	db.Burger.create(req.body).then(function(data) {
+      res.redirect("/");
+    });
+  });
 
-router.put("/:id", function(req, res) {
-	var condition = "id = " + req.params.id;
+  // DELETE route for deleting burgers. You can access the burger's id in req.params.id
+  app.delete("/:id", function(req, res) {
+  	db.Burger.destroy({
+      where: {
+        id: req.params.id
+      }
+    }).then(function(data) {
+      res.redirect("/");
+    });
+  });
 
-	burger.update({
-		devoured: true
-		}, condition, function() {
-		res.redirect("/");
-	});
-});
+  // PUT route for updating burgers. The updated burger will be available in req.body
+  app.put("/:id", function(req, res) {
+    db.Burger.update({
+      devoured: true
+    }, {
+      where: {
+        id: req.params.id
+      }
+    }).then(function(data) {
+        res.redirect("/");
+      });
+  });
 
-router.post("/", function(req, res) {
-  	burger.create(
-  		"burger_name",
-	    [req.body.name], 
-	    function() {
-		    res.redirect("/");
-	});
-});
-
-
-module.exports = router;
+};
