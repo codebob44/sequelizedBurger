@@ -107,7 +107,7 @@ button:hover {
 	z-index: -1; 
 	justify-content: center;
 	height: 300px;
-	background-image: url(../images/burger-background.jpg);
+	background-image: url(../img/burger-background.jpg);
 	background-color: #fff;
 	background-attachment: fixed;
 	background-position: center;
